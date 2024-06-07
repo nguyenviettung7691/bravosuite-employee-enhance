@@ -1,0 +1,21 @@
+{
+    "manifest_version": 3,
+    "name": "Bravosuite Employee Enhance",
+    "version": "1.0",
+    "description": "Makes the tool more useable.",
+    "permissions": [
+      "activeTab"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://employee.bravosuite.io/time-sheet"],
+        "js": ["content.js"]
+      }
+    ],
+    "action": {
+      "default_popup": "popup.html"
+    }
+  }
