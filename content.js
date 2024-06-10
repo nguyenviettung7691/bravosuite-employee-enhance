@@ -53,10 +53,10 @@ function calculateRemainTime() {
 
       let remainMinute = 2400 - originalValue;
       let remainHour = (remainMinute / 60).toFixed(2);
-      let newValueText = ` (Tuần này còn: ${remainMinute} phút = ${remainHour} giờ)`;
+      let newValueText = (remainMinute > 0) ? `Tuần này còn: ${remainMinute} phút = ${remainHour} giờ` : 'Tuần này đủ giờ rồi mấy ní';
 
       const newValueElement = document.createElement("div");
-      newValueElement.style.color = "orange";
+      newValueElement.style.color = (remainMinute > 0) ? "red" : "green";
       newValueElement.innerText = newValueText;
       header.appendChild(newValueElement);
 
@@ -79,10 +79,10 @@ function calculateRemainTime() {
 
       let remainMinuteFromNow = remainMinute - differenceInMinutes;
       let remainHourFromNow = (remainMinuteFromNow / 60).toFixed(2);
-      let remainMinuteFromNowText = ` (Bây giờ checkout sẽ còn: ${remainMinuteFromNow} phút = ${remainHourFromNow} giờ)`;
+      let remainMinuteFromNowText = (remainMinuteFromNow > 0) ? `Bây giờ checkout sẽ còn: ${remainMinuteFromNow} phút = ${remainHourFromNow} giờ` : 'Bây giờ checkout sẽ đủ giờ nha mấy ní';
 
       const fromNowElement = document.createElement("div");
-      fromNowElement.style.color = "red";
+      fromNowElement.style.color = (remainMinuteFromNow > 0) ? "orange" : "green";
       fromNowElement.innerText = remainMinuteFromNowText;
       header.appendChild(fromNowElement);
     } else {
