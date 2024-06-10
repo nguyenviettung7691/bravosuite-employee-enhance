@@ -43,16 +43,13 @@ function calculateRemainTime() {
 
       if (timeOut.includes(":")) lastTime = timeOut;
       else if (timeIn.includes(":")) lastTime = timeIn;
-      console.log(timeIn, timeOut, lastTime);
 
       const currentTime = getCurrentTimeString();
-      console.log(currentTime);
 
       const differenceInMinutes = calculateTimeDifference(
         lastTime,
         currentTime
       );
-      console.log(differenceInMinutes);
 
       let remainMinuteFromNow = remainMinute - differenceInMinutes;
       let remainHourFromNow = (remainMinuteFromNow / 60).toFixed(2);
@@ -62,6 +59,8 @@ function calculateRemainTime() {
       fromNowElement.style.color = "red";
       fromNowElement.innerText = remainMinuteFromNowText;
       header.appendChild(fromNowElement);
+    } else {
+      calculateRemainTime();
     }
   }, 500);
 }
