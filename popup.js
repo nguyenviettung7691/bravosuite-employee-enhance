@@ -17,10 +17,6 @@ function calculateRemainTime() {
       ".weekly-attendance-container__highcharts svg .highcharts-title"
     );
     if (originalValueElement) {
-      const header = document.querySelector(
-        ".weekly-attendance-container__header > div"
-      );
-
       let originalValue = convertToMinutes(
         originalValueElement.innerHTML.trim()
       );
@@ -28,11 +24,6 @@ function calculateRemainTime() {
       let remainMinute = 2400 - originalValue;
       let remainHour = (remainMinute / 60).toFixed(2);
       let newValueText = ` (Tuần này còn: ${remainMinute} phút = ${remainHour} giờ)`;
-
-      const newValueElement = document.createElement("div");
-      newValueElement.style.color = "orange";
-      newValueElement.innerText = newValueText;
-      header.appendChild(newValueElement);
 
       const timeCards = document.querySelectorAll(
         ".daily-attendance-container__daily-attendance-card"
@@ -45,7 +36,6 @@ function calculateRemainTime() {
       else if (timeIn.includes(":")) lastTime = timeIn;
 
       const currentTime = getCurrentTimeString();
-
       const differenceInMinutes = calculateTimeDifference(
         lastTime,
         currentTime
@@ -55,10 +45,10 @@ function calculateRemainTime() {
       let remainHourFromNow = (remainMinuteFromNow / 60).toFixed(2);
       let remainMinuteFromNowText = ` (Bây giờ checkout sẽ còn: ${remainMinuteFromNow} phút = ${remainHourFromNow} giờ)`;
 
-      const fromNowElement = document.createElement("div");
-      fromNowElement.style.color = "red";
-      fromNowElement.innerText = remainMinuteFromNowText;
-      header.appendChild(fromNowElement);
+      return {
+        newValueText,
+        remainMinuteFromNowText
+      }
     } else {
       calculateRemainTime();
     }
@@ -70,6 +60,13 @@ function onLoad() {
     chrome.scripting.executeScript({
       target: { tabId: tabs[0].id },
       function: calculateRemainTime,
+    },
+    (results) => {
+      if (results && results[0] && results[0].result) {
+        const timeObject = results[0].result;
+        document.getElementById('remain-minutes').innerText = timeObject.newValueText;
+        document.getElementById('remain-minutes-from-now').innerText = timeObject.remainMinuteFromNowText;
+      }
     });
   });
 }

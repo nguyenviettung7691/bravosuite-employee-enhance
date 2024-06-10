@@ -3,9 +3,7 @@
     "name": "Bravosuite Employee Enhance",
     "version": "1.0",
     "description": "Makes the tool more useable.",
-    "permissions": [
-      "activeTab"
-    ],
+    "permissions": [ "activeTab", "scripting" ],
     "background": {
       "service_worker": "background.js"
     },
