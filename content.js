@@ -51,9 +51,25 @@ function calculateRemainTime() {
         originalValueElement.innerHTML.trim()
       );
 
-      let remainMinute = 2400 - originalValue;
+      let annualLeave = 0
+      const weekdayContainersTimelogs = document.querySelectorAll('.weekly-attendance-container__day-card .flex-fill .mt-1 .d-flex div')
+      weekdayContainersTimelogs.forEach(element => {
+        if(element.innerText.trim() == "AL") annualLeave += 480
+      })
+
+      if(annualLeave > 0) {
+        const annualLeaveHours = (annualLeave / 60).toFixed(2)
+        const annualLeaveDays = (annualLeaveHours / 8).toFixed(2)
+        const alElement = document.createElement("div");
+        alElement.style.color = "blue";
+        alElement.innerText = `Trừ ngày phép: ${annualLeave} phút = ${annualLeaveHours} giờ = ${annualLeaveDays} ngày`;
+        header.appendChild(alElement);
+      }
+
+      let remainMinute = 2400 - originalValue - annualLeave;
       let remainHour = (remainMinute / 60).toFixed(2);
-      let newValueText = (remainMinute > 0) ? `Tuần này còn: ${remainMinute} phút = ${remainHour} giờ` : 'Tuần này đủ giờ rồi mấy ní';
+      let remainDays = (remainHour / 8).toFixed()
+      let newValueText = (remainMinute > 0) ? `Tuần này còn: ${remainMinute} phút = ${remainHour} giờ = ${remainDays} ngày` : 'Tuần này đủ giờ rồi mấy ní';
 
       const newValueElement = document.createElement("div");
       newValueElement.style.color = (remainMinute > 0) ? "red" : "green";
@@ -79,7 +95,8 @@ function calculateRemainTime() {
 
       let remainMinuteFromNow = remainMinute - differenceInMinutes;
       let remainHourFromNow = (remainMinuteFromNow / 60).toFixed(2);
-      let remainMinuteFromNowText = (remainMinuteFromNow > 0) ? `Bây giờ checkout sẽ còn: ${remainMinuteFromNow} phút = ${remainHourFromNow} giờ` : 'Bây giờ checkout sẽ đủ giờ nha mấy ní';
+      let remainDaysFromNow = remainHourFromNow / 8
+      let remainMinuteFromNowText = (remainMinuteFromNow > 0) ? `Bây giờ checkout sẽ còn: ${remainMinuteFromNow} phút = ${remainHourFromNow} giờ = ${remainDaysFromNow} ngày` : 'Bây giờ checkout sẽ đủ giờ nha mấy ní';
 
       const fromNowElement = document.createElement("div");
       fromNowElement.style.color = (remainMinuteFromNow > 0) ? "orange" : "green";
