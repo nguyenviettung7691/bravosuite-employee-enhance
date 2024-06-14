@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Bravosuite Employee Enhance",
     "version": "1.0",
-    "description": "Makes the tool more useable.",
+    "description": "Makes Bravosuite great again.",
     "permissions": [ "activeTab", "scripting" ],
     "background": {
       "service_worker": "background.js"
