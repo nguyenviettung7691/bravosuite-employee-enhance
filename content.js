@@ -96,7 +96,7 @@ function calculateRemainTime() {
       let annualLeaveMinutes = 0
       const weekdayContainersTimelogs = document.querySelectorAll('.weekly-attendance-container__day-card .flex-fill .mt-1 .d-flex div')
       weekdayContainersTimelogs.forEach(element => {
-        if(element.innerText.trim() == "AL") annualLeaveMinutes += 480
+        if(["AL", "WFH", "WFA"].includes(element.innerText.trim())) annualLeaveMinutes += 480
       })
       if(annualLeaveMinutes > 0) {
         const annualLeaveHours = convertMinutesToHours(annualLeaveMinutes)
