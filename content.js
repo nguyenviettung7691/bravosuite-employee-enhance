@@ -34,7 +34,10 @@ function calculateTimeDifference(timeString1, timeString2) {
   const minutes1 = convertToMinutesSinceMidnight(time1);
   const minutes2 = convertToMinutesSinceMidnight(time2);
 
-  return Math.abs(minutes1 - minutes2);
+  let lunchBreakOffset = 0;
+  if(time1.hours < 13) lunchBreakOffset = 60
+
+  return Math.abs(minutes1 - minutes2 - lunchBreakOffset);
 }
 
 function convertMinutesToHours(minutes) {
@@ -96,7 +99,12 @@ function calculateRemainTime() {
       let annualLeaveMinutes = 0
       const weekdayContainersTimelogs = document.querySelectorAll('.weekly-attendance-container__day-card .flex-fill .mt-1 .d-flex div')
       weekdayContainersTimelogs.forEach(element => {
-        if(["AL", "WFH", "WFA"].includes(element.innerText.trim())) annualLeaveMinutes += 480
+        let elementTxt = element.innerText.trim()
+        if(["AL", "WFH", "WFA"].includes(elementTxt)) annualLeaveMinutes += 480
+        else if(elementTxt.includes("AL/") || elementTxt.includes("WFH/") || elementTxt.includes("WFA/")) {
+          // let officeMinutes = parseFloat(elementTxt.split('/')[1]) * 60
+          annualLeaveMinutes += 240
+        }
       })
       if(annualLeaveMinutes > 0) {
         const annualLeaveHours = convertMinutesToHours(annualLeaveMinutes)
@@ -125,10 +133,7 @@ function calculateRemainTime() {
       if (timeOut.includes(":")) lastTime = timeOut;
       else if (timeIn.includes(":")) lastTime = timeIn;
       const currentTime = getCurrentTimeString();
-      const differenceInMinutes = calculateTimeDifference(
-        lastTime,
-        currentTime
-      );
+      const differenceInMinutes = calculateTimeDifference(lastTime, currentTime);
       let remainMinuteFromNow = remainMinute - differenceInMinutes;
       let remainHourFromNow = convertMinutesToHours(remainMinuteFromNow)
       let remainDaysFromNow = (remainMinuteFromNow / (8*60)).toFixed(2)
