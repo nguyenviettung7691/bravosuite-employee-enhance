@@ -102,8 +102,8 @@ function calculateRemainTime() {
         let elementTxt = element.innerText.trim()
         if(["AL", "WFH", "WFA"].includes(elementTxt)) annualLeaveMinutes += 480
         else if(elementTxt.includes("AL/") || elementTxt.includes("WFH/") || elementTxt.includes("WFA/")) {
-          // let officeMinutes = parseFloat(elementTxt.split('/')[1]) * 60
           annualLeaveMinutes += 240
+          // let officeMinutes = parseFloat(elementTxt.split('/')[1]) * 60
         }
       })
       if(annualLeaveMinutes > 0) {
@@ -129,9 +129,17 @@ function calculateRemainTime() {
       );
       const timeIn = timeCards[0].children[1].innerText.trim();
       const timeOut = timeCards[1].children[1].innerText.trim();
-      let lastTime = "";
+      let lastTime = 0;
       if (timeOut.includes(":")) lastTime = timeOut;
       else if (timeIn.includes(":")) lastTime = timeIn;
+      if(lastTime == 0) {
+        const noCheckinElement = document.createElement("div");
+        noCheckinElement.style.color = "red";
+        noCheckinElement.innerText = 'Chưa có giờ checkin kìa! Hôm nay có quên checkin ko?'
+        header.appendChild(noCheckinElement);
+        return;
+      }
+
       const currentTime = getCurrentTimeString();
       const differenceInMinutes = calculateTimeDifference(lastTime, currentTime);
       let remainMinuteFromNow = remainMinute - differenceInMinutes;
