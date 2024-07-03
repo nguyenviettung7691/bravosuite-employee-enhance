@@ -35,7 +35,7 @@ function calculateTimeDifference(timeString1, timeString2) {
   const minutes2 = convertToMinutesSinceMidnight(time2);
 
   let lunchBreakOffset = 0;
-  if(time1.hours < 13) lunchBreakOffset = 60
+  if((time1.hours < 13) && (time2.hours > 13)) lunchBreakOffset = 60
 
   return Math.abs(minutes1 - minutes2 - lunchBreakOffset);
 }
