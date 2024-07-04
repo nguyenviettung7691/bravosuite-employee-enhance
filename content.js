@@ -66,20 +66,9 @@ function addMinutesToCurrentTime(minutesToAdd) {
   return `${formattedHours}:${formattedMinutes}`;
 }
 
-function isTimeAfter(inputTime, referenceTime = "20:00") {
-  // Parse the input time and reference time
-  const [inputHours, inputMinutes] = inputTime.split(':').map(Number);
-  const [refHours, refMinutes] = referenceTime.split(':').map(Number);
-  
-  // Compare hours first
-  if (inputHours > refHours) {
-      return true;
-  } else if (inputHours < refHours) {
-      return false;
-  } else {
-      // If hours are the same, compare minutes
-      return inputMinutes > refMinutes;
-  }
+function isTimeInRange(timeString) {
+  const time = parseTimeString(timeString)
+  return time.hours >= 7 && time.hours <= 20;
 }
 
 
@@ -157,7 +146,7 @@ function calculateRemainTime() {
       if(checkoutTime) {
         const checkoutTimeElement = document.createElement("div");
         checkoutTimeElement.style.color = "purple";
-        checkoutTimeElement.innerText = isTimeAfter(checkoutTime) ? 'Hôm nay không kịp đủ giờ tuần này đâu, ngày mai đi làm tiếp' : `Sẽ đủ giờ khi checkout lúc ${checkoutTime} hôm nay`;
+        checkoutTimeElement.innerText = isTimeInRange(checkoutTime) ? `Sẽ đủ giờ khi checkout lúc ${checkoutTime} hôm nay` : 'Hôm nay không kịp đủ giờ tuần này đâu, ngày mai đi làm tiếp';
         header.appendChild(checkoutTimeElement);
       }
 
