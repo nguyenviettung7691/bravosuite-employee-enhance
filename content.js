@@ -107,7 +107,7 @@ function calculateRemainTime() {
       let remainMinute = 2400 - originalValue - annualLeaveMinutes;
       let remainHour = convertMinutesToHours(remainMinute)
       let remainDays = (remainMinute / (8*60)).toFixed(2)
-      let newValueText = (remainMinute > 0) ? `Tuần này còn: ${remainMinute} phút = ${remainHour} = ${remainDays} ngày` : 'Tuần này đủ giờ rồi mấy ní';
+      let newValueText = (remainMinute > 0) ? `Tuần này còn: ${remainMinute} phút = ${remainHour} = ${remainDays} ngày` : 'Tuần này đã tích lũy đủ giờ rồi mấy ní!';
       const newValueElement = document.createElement("div");
       newValueElement.style.color = (remainMinute > 0) ? "red" : "green";
       newValueElement.innerText = newValueText;
@@ -130,6 +130,17 @@ function calculateRemainTime() {
       }
 
       const currentTime = getCurrentTimeString();
+
+      const miniumMinutesADay = 240;
+      const minimumHoursADay = miniumMinutesADay / 60;
+      const todayMinutes = calculateTimeDifference(timeIn, currentTime);
+      let todayMiniumReached = todayMinutes > miniumMinutesADay;
+      let todayMiniumText = todayMiniumReached ? `Lúc này đã đủ ${minimumHoursADay} giờ tối thiểu hôm nay` : `Lúc này chưa đủ ${minimumHoursADay} giờ tối thiểu hôm nay, còn ${miniumMinutesADay - todayMinutes} phút`;
+      const todayMiniumEl = document.createElement("div");
+      todayMiniumEl.style.color = todayMiniumReached ? "green" : "orange";
+      todayMiniumEl.innerText = todayMiniumText;
+      header.appendChild(todayMiniumEl);
+
       const differenceInMinutes = calculateTimeDifference(lastTime, currentTime);
       let remainMinuteFromNow = remainMinute - differenceInMinutes;
       let remainHourFromNow = convertMinutesToHours(remainMinuteFromNow)
