@@ -132,8 +132,8 @@ function calculateRemainTime() {
       const currentTime = getCurrentTimeString();
 
       const dailyContainerElement = document.querySelector('.time-sheet-container__daily-attendance-section');
-      const miniumMinutesADay = 240;
-      const minimumHoursADay = miniumMinutesADay / 60;
+      const minimumHoursADay = 6;
+      const miniumMinutesADay = 60 * minimumHoursADay;
       const todayMinutes = calculateTimeDifference(timeIn, currentTime);
       let todayMiniumReached = todayMinutes > miniumMinutesADay;
       let todayMiniumText = todayMiniumReached ? `Bây giờ checkout sẽ đủ ${minimumHoursADay} giờ tối thiểu hôm nay` : `Lúc này chưa đủ ${minimumHoursADay} giờ tối thiểu hôm nay, còn ${miniumMinutesADay - todayMinutes} phút`;
