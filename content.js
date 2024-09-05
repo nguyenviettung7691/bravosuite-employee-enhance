@@ -79,6 +79,7 @@ function calculateRemainTime() {
     );
     if (originalValueElement) {
       const WEEKLY_MINUTES_REQUIRE = 2400;
+      const DAILY_MINUTES_REQUIRE = 480;
 
       const header = document.querySelector(
         ".weekly-attendance-container__header > div"
@@ -93,14 +94,14 @@ function calculateRemainTime() {
       const weekdayContainersTimelogs = document.querySelectorAll('.weekly-attendance-container__day-card .flex-fill .mt-1 .d-flex div')
       weekdayContainersTimelogs.forEach(element => {
         let elementTxt = element.innerText.trim()
-        if(["AL", "WFH", "WFA"].includes(elementTxt)) annualLeaveMinutes += 480
+        if(["AL", "WFH", "WFA"].includes(elementTxt)) annualLeaveMinutes += DAILY_MINUTES_REQUIRE
         else if(elementTxt.includes("AL/") || elementTxt.includes("WFH/") || elementTxt.includes("WFA/")) {
-          annualLeaveMinutes += 240
+          annualLeaveMinutes += DAILY_MINUTES_REQUIRE / 2
         }
       })
       if(annualLeaveMinutes > 0) {
         const annualLeaveHours = convertMinutesToHours(annualLeaveMinutes)
-        const annualLeaveDays = (annualLeaveMinutes / (8*60)).toFixed(2)
+        const annualLeaveDays = (annualLeaveMinutes / (DAILY_MINUTES_REQUIRE)).toFixed(2)
         const alElement = document.createElement("div");
         alElement.style.color = "blue";
         alElement.innerText = `Trừ ngày phép: ${annualLeaveMinutes} phút = ${annualLeaveHours} = ${annualLeaveDays} ngày`;
@@ -111,11 +112,11 @@ function calculateRemainTime() {
       let holidayMinutes = 0
       const holidayContainers = document.querySelectorAll('.umbrella-with-color-icon.weekly-attendance-container__umbrella-icon')
       holidayContainers.forEach(element => {
-        holidayMinutes += 480
+        holidayMinutes += DAILY_MINUTES_REQUIRE
       })
       if(holidayMinutes > 0) {
         const holidayHours = convertMinutesToHours(holidayMinutes)
-        const holidayDays = (holidayMinutes / (8*60)).toFixed(2)
+        const holidayDays = (holidayMinutes / (DAILY_MINUTES_REQUIRE)).toFixed(2)
         const holidayElement = document.createElement("div")
         holidayElement.style.color = "turquoise";
         holidayElement.innerText = `Trừ ngày lễ: ${holidayMinutes} phút = ${holidayHours} = ${holidayDays} ngày`;
@@ -125,7 +126,7 @@ function calculateRemainTime() {
       // Remain time
       let remainMinute = WEEKLY_MINUTES_REQUIRE - originalValue - annualLeaveMinutes - holidayMinutes;
       let remainHour = convertMinutesToHours(remainMinute)
-      let remainDays = (remainMinute / (8*60)).toFixed(2)
+      let remainDays = (remainMinute / (DAILY_MINUTES_REQUIRE)).toFixed(2)
       let newValueText = (remainMinute > 0) ? `Tuần này còn phải tích luỹ: ${remainMinute} phút = ${remainHour} = ${remainDays} ngày` : 'Tuần này đã tích lũy đủ giờ rồi mấy ní!';
       const newValueElement = document.createElement("div");
       newValueElement.style.color = (remainMinute > 0) ? "red" : "green";
@@ -167,7 +168,7 @@ function calculateRemainTime() {
       const differenceInMinutes = calculateTimeDifference(lastTime, currentTime);
       let remainMinuteFromNow = remainMinute - differenceInMinutes;
       let remainHourFromNow = convertMinutesToHours(remainMinuteFromNow)
-      let remainDaysFromNow = (remainMinuteFromNow / (8*60)).toFixed(2)
+      let remainDaysFromNow = (remainMinuteFromNow / (DAILY_MINUTES_REQUIRE)).toFixed(2)
       const hasRemainMinute = remainMinuteFromNow > 0;
       let remainMinuteFromNowText = hasRemainMinute ? `Bây giờ checkout sẽ còn: ${remainMinuteFromNow} phút = ${remainHourFromNow} = ${remainDaysFromNow} ngày` : 'Bây giờ checkout sẽ đủ giờ nha mấy ní';
       const fromNowElement = document.createElement("div");
