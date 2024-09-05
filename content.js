@@ -78,6 +78,8 @@ function calculateRemainTime() {
       ".weekly-attendance-container__highcharts svg .highcharts-title"
     );
     if (originalValueElement) {
+      const WEEKLY_MINUTES_REQUIRE = 2400;
+
       const header = document.querySelector(
         ".weekly-attendance-container__header > div"
       );
@@ -85,6 +87,8 @@ function calculateRemainTime() {
       let originalValue = convertToMinutes(
         originalValueElement.innerHTML.trim()
       );
+
+      // Annual Leave
       let annualLeaveMinutes = 0
       const weekdayContainersTimelogs = document.querySelectorAll('.weekly-attendance-container__day-card .flex-fill .mt-1 .d-flex div')
       weekdayContainersTimelogs.forEach(element => {
@@ -92,7 +96,6 @@ function calculateRemainTime() {
         if(["AL", "WFH", "WFA"].includes(elementTxt)) annualLeaveMinutes += 480
         else if(elementTxt.includes("AL/") || elementTxt.includes("WFH/") || elementTxt.includes("WFA/")) {
           annualLeaveMinutes += 240
-          // let officeMinutes = parseFloat(elementTxt.split('/')[1]) * 60
         }
       })
       if(annualLeaveMinutes > 0) {
@@ -104,7 +107,23 @@ function calculateRemainTime() {
         header.appendChild(alElement);
       }
 
-      let remainMinute = 2400 - originalValue - annualLeaveMinutes;
+      // Holiday
+      let holidayMinutes = 0
+      const holidayContainers = document.querySelectorAll('.umbrella-with-color-icon.weekly-attendance-container__umbrella-icon')
+      holidayContainers.forEach(element => {
+        holidayMinutes += 480
+      })
+      if(holidayMinutes > 0) {
+        const holidayHours = convertMinutesToHours(holidayMinutes)
+        const holidayDays = (holidayMinutes / (8*60)).toFixed(2)
+        const holidayElement = document.createElement("div")
+        holidayElement.style.color = "turquoise";
+        holidayElement.innerText = `Trừ ngày lễ: ${holidayMinutes} phút = ${holidayHours} = ${holidayDays} ngày`;
+        header.appendChild(holidayElement);
+      }
+
+      // Remain time
+      let remainMinute = WEEKLY_MINUTES_REQUIRE - originalValue - annualLeaveMinutes - holidayMinutes;
       let remainHour = convertMinutesToHours(remainMinute)
       let remainDays = (remainMinute / (8*60)).toFixed(2)
       let newValueText = (remainMinute > 0) ? `Tuần này còn phải tích luỹ: ${remainMinute} phút = ${remainHour} = ${remainDays} ngày` : 'Tuần này đã tích lũy đủ giờ rồi mấy ní!';
@@ -113,6 +132,7 @@ function calculateRemainTime() {
       newValueElement.innerText = newValueText;
       header.appendChild(newValueElement);
 
+      // Check last timelog
       const timeCards = document.querySelectorAll(
         ".daily-attendance-container__daily-attendance-card"
       );
@@ -131,6 +151,7 @@ function calculateRemainTime() {
 
       const currentTime = getCurrentTimeString();
 
+      // Today minimum time
       const dailyContainerElement = document.querySelector('.time-sheet-container__daily-attendance-section');
       const minimumHoursADay = 6;
       const miniumMinutesADay = 60 * minimumHoursADay;
@@ -142,6 +163,7 @@ function calculateRemainTime() {
       todayMiniumEl.innerText = todayMiniumText;
       dailyContainerElement.appendChild(todayMiniumEl);
 
+      // Calculate Remain time when checkout now
       const differenceInMinutes = calculateTimeDifference(lastTime, currentTime);
       let remainMinuteFromNow = remainMinute - differenceInMinutes;
       let remainHourFromNow = convertMinutesToHours(remainMinuteFromNow)
@@ -153,6 +175,7 @@ function calculateRemainTime() {
       fromNowElement.innerText = remainMinuteFromNowText;
       header.appendChild(fromNowElement);
 
+      // Calculate minimum checkout time today to satisfied this week timelog
       let remainMinuteInOneDay = remainMinuteFromNow < (60 * 10)
       const checkoutTime = (hasRemainMinute && remainMinuteInOneDay) ? addMinutesToCurrentTime(remainMinuteFromNow) : 0
       if(checkoutTime) {
@@ -161,6 +184,14 @@ function calculateRemainTime() {
         checkoutTimeElement.innerText = isTimeInRange(checkoutTime) ? `Sẽ đủ giờ khi checkout lúc ${checkoutTime} hôm nay` : '';
         header.appendChild(checkoutTimeElement);
       }
+
+      // Weekly timelog info
+      const weeklyInfo = document.createElement("em");
+      weeklyInfo.style.color = "grey";
+      weeklyInfo.style.fontStyle = "italic";
+      weeklyInfo.style.fontSize = "14px";
+      weeklyInfo.innerText = `Mỗi tuần phải tích luỹ đủ ${WEEKLY_MINUTES_REQUIRE} phút = ${WEEKLY_MINUTES_REQUIRE / 60} giờ`;
+      header.appendChild(weeklyInfo);
 
     } else {
       calculateRemainTime();
