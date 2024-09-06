@@ -159,7 +159,7 @@ function calculateRemainTime() {
       const minimumHoursADay = 6;
       const miniumMinutesADay = 60 * minimumHoursADay;
       let todayMiniumReached = todayMinutes > miniumMinutesADay;
-      let todayMiniumText = todayMiniumReached ? `Bây giờ checkout sẽ đủ ${minimumHoursADay} giờ tối thiểu hôm nay` : `Lúc này chưa đủ ${minimumHoursADay} giờ tối thiểu hôm nay, còn ${miniumMinutesADay - todayMinutes} phút`;
+      let todayMiniumText = todayMiniumReached ? `Bây giờ checkout sẽ đủ ${minimumHoursADay} giờ tối thiểu hôm nay` : `Lúc này chưa đủ ${minimumHoursADay} giờ tối thiểu hôm nay, còn ${convertMinutesToHours(miniumMinutesADay - todayMinutes)}`;
       const todayMiniumEl = document.createElement("div");
       todayMiniumEl.style.color = todayMiniumReached ? "green" : "red";
       todayMiniumEl.innerText = todayMiniumText;
@@ -168,7 +168,7 @@ function calculateRemainTime() {
       const maximumHoursADay = 10;
       const maximumMinutesADay = 60 * maximumHoursADay;
       let todayMaximumReached = todayMinutes > maximumMinutesADay;
-      let todayMaximumText = todayMaximumReached ? `Lúc này đã quá ${maximumHoursADay} giờ tối đa hôm nay! Về đi thôi!` : `Còn ${maximumMinutesADay - todayMinutes} phút nữa là đến ${maximumHoursADay} giờ tối đa hôm nay`;
+      let todayMaximumText = todayMaximumReached ? `Lúc này đã quá ${maximumHoursADay} giờ tối đa hôm nay! Về đi thôi!` : `Còn ${convertMinutesToHours(maximumMinutesADay - todayMinutes)} nữa là đến ${maximumHoursADay} giờ tối đa hôm nay`;
       const todayMaximumEl = document.createElement("div");
       todayMaximumEl.style.color = todayMaximumReached ? "red" : "green";
       todayMaximumEl.innerText = todayMaximumText;
