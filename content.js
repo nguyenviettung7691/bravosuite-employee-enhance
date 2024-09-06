@@ -24,7 +24,7 @@ function parseTimeString(timeString) {
 }
 
 function convertToMinutesSinceMidnight(time) {
-  return time.hours * 60 + time.minutes;
+  return (time.hours * 60) + time.minutes;
 }
 
 function calculateTimeDifference(timeString1, timeString2) {
@@ -37,7 +37,7 @@ function calculateTimeDifference(timeString1, timeString2) {
   let lunchBreakOffset = 0;
   if((time1.hours < 13) && (time2.hours > 13)) lunchBreakOffset = 60
 
-  return Math.abs(minutes1 - minutes2 - lunchBreakOffset);
+  return minutes2 - lunchBreakOffset - minutes1;
 }
 
 function convertMinutesToHours(minutes) {
