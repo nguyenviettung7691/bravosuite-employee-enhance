@@ -152,17 +152,33 @@ function calculateRemainTime() {
 
       const currentTime = getCurrentTimeString();
 
-      // Today minimum time
+      // Today minimum-maximum time
       const dailyContainerElement = document.querySelector('.time-sheet-container__daily-attendance-section');
+      const todayMinutes = calculateTimeDifference(timeIn, currentTime);
+
       const minimumHoursADay = 6;
       const miniumMinutesADay = 60 * minimumHoursADay;
-      const todayMinutes = calculateTimeDifference(timeIn, currentTime);
       let todayMiniumReached = todayMinutes > miniumMinutesADay;
       let todayMiniumText = todayMiniumReached ? `Bây giờ checkout sẽ đủ ${minimumHoursADay} giờ tối thiểu hôm nay` : `Lúc này chưa đủ ${minimumHoursADay} giờ tối thiểu hôm nay, còn ${miniumMinutesADay - todayMinutes} phút`;
       const todayMiniumEl = document.createElement("div");
-      todayMiniumEl.style.color = todayMiniumReached ? "green" : "orange";
+      todayMiniumEl.style.color = todayMiniumReached ? "green" : "red";
       todayMiniumEl.innerText = todayMiniumText;
       dailyContainerElement.appendChild(todayMiniumEl);
+
+      const maximumHoursADay = 10;
+      const maximumMinutesADay = 60 * maximumHoursADay;
+      let todayMaximumReached = todayMinutes > maximumMinutesADay;
+      let todayMaximumText = todayMaximumReached ? `Lúc này đã quá ${maximumHoursADay} giờ tối đa hôm nay! Về đi thôi!` : `Còn ${maximumMinutesADay - todayMinutes} phút nữa là đến ${maximumHoursADay} giờ tối đa hôm nay`;
+      const todayMaximumEl = document.createElement("div");
+      todayMaximumEl.style.color = todayMaximumReached ? "red" : "green";
+      todayMaximumEl.innerText = todayMaximumText;
+      dailyContainerElement.appendChild(todayMaximumEl);
+
+      const todayHours = convertMinutesToHours(todayMaximumReached ? maximumMinutesADay : todayMinutes);
+      const todayMinutesEl = document.createElement("div");
+      todayMinutesEl.style.color = "blue";
+      todayMinutesEl.innerText = `Bây giờ checkout sẽ tích luỹ ${todayHours} cho hôm nay`;
+      dailyContainerElement.appendChild(todayMinutesEl);
 
       // Calculate Remain time when checkout now
       const differenceInMinutes = calculateTimeDifference(lastTime, currentTime);

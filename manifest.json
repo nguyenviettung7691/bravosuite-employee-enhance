@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Bravosuite Employee Enhance",
-    "version": "1.050924",
+    "version": "1.060924",
     "description": "Makes Bravosuite great again.",
     "permissions": [ "activeTab", "scripting" ],
     "background": {
