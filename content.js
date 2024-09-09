@@ -176,7 +176,7 @@ function calculateRemainTime() {
 
       const todayHours = convertMinutesToHours(todayMaximumReached ? maximumMinutesADay : todayMinutes);
       const todayMinutesEl = document.createElement("div");
-      todayMinutesEl.style.color = "blue";
+      todayMinutesEl.style.color = todayMiniumReached && !todayMaximumReached ? "green" : "red";
       todayMinutesEl.innerText = `Bây giờ checkout sẽ tích luỹ ${todayHours} cho hôm nay`;
       dailyContainerElement.appendChild(todayMinutesEl);
 
