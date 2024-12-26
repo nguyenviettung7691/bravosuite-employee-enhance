@@ -155,8 +155,11 @@ function calculateRemainTime() {
       // Today minimum-maximum time
       const dailyContainerElement = document.querySelector('.time-sheet-container__daily-attendance-section');
       const todayMinutes = calculateTimeDifference(timeIn, currentTime);
+      const dailyLeaveTextContainerElement = document.querySelector('.daily-attendance-container__daily-quote-text');
+      const dailyLeaveText = dailyLeaveTextContainerElement ? dailyLeaveTextContainerElement.innerText.trim() : '';
+      const dailyLeaveType = dailyLeaveText.includes("Have a productive day at work") ? "HalfLeave" : ["Happy holiday","Enjoy your leave day"].includes(dailyLeaveText) ? "FullLeave" : "";
 
-      const minimumHoursADay = 6;
+      const minimumHoursADay = dailyLeaveType.includes("FullLeave") ? 0 : dailyLeaveType.includes("HalfLeave") ? 4 : 6;
       const miniumMinutesADay = 60 * minimumHoursADay;
       let todayMiniumReached = todayMinutes > miniumMinutesADay;
       let todayMiniumText = todayMiniumReached ? `Bây giờ checkout sẽ đủ ${minimumHoursADay} giờ tối thiểu hôm nay` : `Lúc này chưa đủ ${minimumHoursADay} giờ tối thiểu hôm nay, còn ${convertMinutesToHours(miniumMinutesADay - todayMinutes)}`;
