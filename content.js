@@ -133,12 +133,16 @@ function calculateRemainTime() {
       newValueElement.innerText = newValueText;
       header.appendChild(newValueElement);
 
-      // Check last timelog
-      const timeCards = document.querySelectorAll(
-        ".daily-attendance-container__daily-attendance-card"
-      );
-      const timeIn = timeCards[0].children[1].innerText.trim();
-      const timeOut = timeCards[1].children[1].innerText.trim();
+      // Today minimum-maximum time
+      const dailyContainerElement = document.querySelector('.time-sheet-container__daily-attendance-section');
+      const dailyLeaveTextContainerElement = document.querySelector('.daily-attendance-container__daily-quote-text');
+      const dailyLeaveText = dailyLeaveTextContainerElement ? dailyLeaveTextContainerElement.innerText.trim() : '';
+      const dailyLeaveType = dailyLeaveText.includes("Have a productive day at work") ? "HalfLeave" : ["Happy holiday","Enjoy your leave day"].includes(dailyLeaveText) ? "FullLeave" : "";
+
+      // Check timelogs (timeIn, timeOut, lastTime)
+      const timeCards = document.querySelectorAll(".daily-attendance-container__daily-attendance-card");
+      let timeIn = timeCards[0].children[1].innerText.trim();
+      let timeOut = timeCards[1].children[1].innerText.trim();
       let lastTime = 0;
       if (timeOut.includes(":")) lastTime = timeOut;
       else if (timeIn.includes(":")) lastTime = timeIn;
@@ -148,17 +152,14 @@ function calculateRemainTime() {
         noCheckinElement.innerText = 'Chưa có giờ checkin kìa! Hôm nay có quên checkin ko?'
         header.appendChild(noCheckinElement);
         return;
+      } else if(dailyLeaveType.includes("HalfLeave")){
+        if(calculateTimeDifference(lastTime, "13:00")) lastTime = "13:00"
+        if(calculateTimeDifference(timeIn, "13:00")) timeIn = "13:00"
+        if(calculateTimeDifference(timeOut, "13:00")) timeOut = "13:00"
       }
 
       const currentTime = getCurrentTimeString();
-
-      // Today minimum-maximum time
-      const dailyContainerElement = document.querySelector('.time-sheet-container__daily-attendance-section');
       const todayMinutes = calculateTimeDifference(timeIn, currentTime);
-      const dailyLeaveTextContainerElement = document.querySelector('.daily-attendance-container__daily-quote-text');
-      const dailyLeaveText = dailyLeaveTextContainerElement ? dailyLeaveTextContainerElement.innerText.trim() : '';
-      const dailyLeaveType = dailyLeaveText.includes("Have a productive day at work") ? "HalfLeave" : ["Happy holiday","Enjoy your leave day"].includes(dailyLeaveText) ? "FullLeave" : "";
-
       const minimumHoursADay = dailyLeaveType.includes("FullLeave") ? 0 : dailyLeaveType.includes("HalfLeave") ? 4 : 6;
       const miniumMinutesADay = 60 * minimumHoursADay;
       let todayMiniumReached = todayMinutes > miniumMinutesADay;
