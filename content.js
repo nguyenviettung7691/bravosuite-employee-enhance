@@ -88,6 +88,7 @@ function calculateRemainTime() {
       let originalValue = convertToMinutes(
         originalValueElement.innerHTML.trim()
       );
+      let accumulatedValue = originalValue;
 
       // Annual Leave
       let annualLeaveMinutes = 0
@@ -96,7 +97,12 @@ function calculateRemainTime() {
         let elementTxt = element.innerText.trim()
         if(["AL", "WFH", "WFA"].includes(elementTxt)) annualLeaveMinutes += DAILY_MINUTES_REQUIRE
         else if(elementTxt.includes("AL/") || elementTxt.includes("WFH/") || elementTxt.includes("WFA/")) {
-          annualLeaveMinutes += DAILY_MINUTES_REQUIRE / 2
+          annualLeaveMinutes += (DAILY_MINUTES_REQUIRE / 2)
+
+          let [type, time] = elementTxt.split("/")
+          if(Number(time) > 4) {
+            accumulatedValue -= ((Number(time) * 60) - 240).toFixed(0)
+          }
         }
       })
       if(annualLeaveMinutes > 0) {
@@ -124,7 +130,7 @@ function calculateRemainTime() {
       }
 
       // Remain time
-      let remainMinute = WEEKLY_MINUTES_REQUIRE - originalValue - annualLeaveMinutes - holidayMinutes;
+      let remainMinute = WEEKLY_MINUTES_REQUIRE - accumulatedValue - annualLeaveMinutes - holidayMinutes;
       let remainHour = convertMinutesToHours(remainMinute)
       let remainDays = (remainMinute / (DAILY_MINUTES_REQUIRE)).toFixed(2)
       let newValueText = (remainMinute > 0) ? `Tuần này còn phải tích luỹ: ${remainMinute} phút = ${remainHour} = ${remainDays} ngày` : 'Tuần này đã tích lũy đủ giờ rồi mấy ní!';
