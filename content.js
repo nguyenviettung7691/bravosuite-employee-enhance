@@ -95,10 +95,9 @@ function calculateRemainTime() {
       const weekdayContainersTimelogs = document.querySelectorAll('.weekly-attendance-container__day-card .flex-fill .mt-1 .d-flex div')
       weekdayContainersTimelogs.forEach(element => {
         let elementTxt = element.innerText.trim()
-        if(["AL", "WFH", "WFA"].includes(elementTxt)) annualLeaveMinutes += DAILY_MINUTES_REQUIRE
-        else if(elementTxt.includes("AL/") || elementTxt.includes("WFH/") || elementTxt.includes("WFA/")) {
+        if(["AL", "WFH", "WFA", "OW"].includes(elementTxt)) annualLeaveMinutes += DAILY_MINUTES_REQUIRE //full-day leave
+        else if(["AL/", "WFH/", "WFA/", "OW/"].some(halfdayLeave => elementTxt.includes(halfdayLeave))) { //partial-day leave
           annualLeaveMinutes += (DAILY_MINUTES_REQUIRE / 2)
-
           let [type, time] = elementTxt.split("/")
           if(Number(time) > 4) {
             accumulatedValue -= ((Number(time) * 60) - 240).toFixed(0)
@@ -118,7 +117,8 @@ function calculateRemainTime() {
       let holidayMinutes = 0
       const holidayContainers = document.querySelectorAll('.umbrella-with-color-icon.weekly-attendance-container__umbrella-icon')
       holidayContainers.forEach(element => {
-        holidayMinutes += DAILY_MINUTES_REQUIRE
+        if(!element.closest('.weekly-attendance-container__day-card').querySelector('.saturday-leaf-icon, .sunday-leaf-icon')) //exclude weekends
+          holidayMinutes += DAILY_MINUTES_REQUIRE
       })
       if(holidayMinutes > 0) {
         const holidayHours = convertMinutesToHours(holidayMinutes)
